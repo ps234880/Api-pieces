@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Handboek PHP CRUD+</title>
+    <link rel="stylesheet" href="app.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body onload="load()">
+    <h1>Classical Music Eras</h1>
+
+    <table>
+        <tr>
+            <th>Piece</th>
+            <th>Composer</th>
+            <th>Link</th>
+            <th>Genre</th>
+            <th></th>
+        </tr>
+        <tbody id="tableContent">
+        </tbody>
+    </table>
+
+    <div id="formLayout">
+        <button id="previous" onclick="previous()">&larr;</button>
+        <button id="next" onclick="next()">&rarr;</button>
+        <label>Select genre:</label><select id="genre" onclick="loadGenrePieces()"></select>
+        <label>Name:</label><input type="text" id="name" /><br>
+        <label>Composer:</label><input type="text" id="composer" /><br>
+        <label>Link:</label><input type="text" id="link" /><br>
+        <button onclick="add()" type="button">Add</button>
+    </div>
+
+    <footer>&copy; 2023 Tong Sheng Zhang</footer>
+</body>
+
+<script>
+    "use strict"
+    const apiBasis = "http://127.0.0.1:8000/api/"
+    // const apiBasis = 'http://10.0.2.15/api/'
+    // const apiBasis = 'http://169.254.161.12/api/'
+
+    const apiPieces = apiBasis + "pieces/"
+    const apiGenres = apiBasis + "genres/"
+
+    let genres = []
+    let json = null
+
+    var offset = 0;
+
+    // offset function
+    function next() {
+        offset += 4;
+        console.log(offset);
+        loadGenrePieces();
+    }
+
+    function previous() {
+        offset -= 4;
+        if (offset <= 0) {
+            offset = 0;
+        }
+        console.log(offset);
+        loadGenrePieces();
+    }
+
+    // genres
+    const loadGenres = async () => {
+        const responsee = await axios.get(apiGenres)
+        const json = await responsee.data
+        let newContent = ''
+        json.map(el => {
+            genres[el.id] = el.name
+            newContent += `<option value="${el.id}">${el.name}</option>`
+        })
+        document.querySelector("#genre").innerHTML = newContent
+        console.log(genres)
+    }
+
+    // genre and pieces
+    const loadGenrePieces = async () => {
+        const genre = document.querySelector("#genre").value
+        console.log('selecteer Genre ', genre)
+        const apiGenresPieces = `${apiGenres}${genre}/pieces?limit=4&offset=${offset}`
+        const responsee = await axios.get(apiGenresPieces)
+        json = await responsee.data
+        show()
+    }
+
+    // pieces conent
+    const show = () => {
+        let tableContent = ''
+        json.map(el => tableContent +=
+            `<tr>
+            <td>${el.name}</td>
+            <td>${el.composer}</td>
+            <td><a href="${el.link}" target="_blank">Link</a></td>
+            <td>${genres[el.genre_id]}</td>
+            <td onclick="remove('${el.id}')"> x </td>
+        </tr>`)
+        document.querySelector("#tableContent").innerHTML = tableContent
+    }
+
+    // show all contents
+    const load = async () => {
+        await loadGenres()
+        await loadGenrePieces()
+        show()
+    }
+
+    // add
+    const add = async () => {
+        const name = document.querySelector("#name").value
+        const composer = document.querySelector("#composer").value
+        const genre = document.querySelector("#genre").value
+        const link = document.querySelector("#link").value
+        const jsonstring = { "name": name, "composer": composer, "link": link, "genre_id": genre }
+        console.log("add: ", jsonstring)
+        const response = await axios.post(apiPieces, jsonstring, { headers: { 'Content-Type': 'application/json' } })
+        console.log('status code', response.status)
+        document.querySelector("#name").value = ''
+        document.querySelector("#composer").value = ''
+        document.querySelector("#link").value = ''
+        await load()
+    }
+
+    // remove
+    const remove = async (id) => {
+        console.log("remove: ", id)
+        console.log(apiPieces + id)
+        const response = await axios.delete(apiPieces + id)
+        console.log('status code', response.status)
+        await load()
+    }		
+</script>
+
+</html>

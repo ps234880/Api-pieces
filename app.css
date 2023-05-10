@@ -1,0 +1,134 @@
+body {
+    font-family: Georgia, serif;
+    background-color: #f5f5f5;
+}
+
+h1 {
+    text-align: center;
+    color: #333333;
+}
+
+table {
+    max-width: 80%;
+    min-width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #333333;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: left;
+    padding: 8px;
+}
+
+td {
+    padding: 8px;
+    border: 1px solid #cccccc;
+}
+
+#previous,
+#next {
+    background-color: #333333;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+    margin-right: 3px;
+    cursor: pointer;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    text-align: left;
+}
+
+select, input {
+    width: 40%;
+    padding: 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+}
+
+button {
+    background-color: #333333;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #555555;
+}
+
+#formLayout {
+    max-width: 80%;
+    margin: auto;
+}
+
+footer {
+    text-align: center;
+    color: #999999;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media only screen and (max-width: 768px) {
+
+    table, thead, tbody, th, td, tr {
+        display: flex;
+        flex-direction: column;
+    }
+
+    thead tr, th {
+        position: absolute;
+        visibility: hidden;
+    }
+
+    td {
+        border-bottom: 1px solid lightgray;
+    }
+
+    /* Text before the td */
+    td:nth-of-type(1):before {
+        content: "NAME";
+        color: gray;
+    }
+
+    td:nth-of-type(2):before {
+        content: "COMPOSER";
+        color: gray;
+    }
+
+    td:nth-of-type(3):before {
+        content: "LINK";
+        color: gray;
+    }
+
+    td:nth-of-type(4):before {
+        content: "GENRE";
+        color: gray;
+    }
+
+    td:nth-of-type(5):before {
+        content: "REMOVE";
+        color: gray;
+    }
+}
+
+/* Mobile */
+@media only screen and (max-width: 1025px) {
+    select, input{
+        width: 100%;
+    }
+}
